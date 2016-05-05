@@ -1,3 +1,7 @@
 = redmine_meeting
 
-Description goes here
+do the standard install then do the cronjob
+
+bundle exec whenever -c redmine_meeting -f plugins/redmine_meeting/config/schedule.rb
+
+
