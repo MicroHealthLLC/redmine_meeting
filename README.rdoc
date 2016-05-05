@@ -1,7 +1,18 @@
 = redmine_meeting
 
-do the standard install then do the cronjob
+git clone in the plugin directory
 
-bundle exec whenever -c redmine_meeting -f plugins/redmine_meeting/config/schedule.rb
+then 
+
+bundle exec rake redmine:plugins:migrate RAILS_ENV=production
+
+then 
+
+restart your webserver
+
+then add the cron job by running this below
+
+bundle exec whenever -i redmine_meeting -f plugins/redmine_meeting/config/schedule.rb
+
 
 
