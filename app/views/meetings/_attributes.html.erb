@@ -1,0 +1,107 @@
+<%= labelled_fields_for :meeting, @meeting do |f| %>
+
+    <div class="splitcontent">
+      <div class="splitcontentleft">
+        <% if @meeting.safe_attribute? 'date' %>
+            <p id="date_in_area">
+              <%= f.text_field(:date, :size => 10, :required => true) %>
+              <%= calendar_for('meeting_date') %>
+            </p>
+        <% end %>
+
+        <% if @meeting.safe_attribute? 'end_date' %>
+            <p id="date_in_area">
+              <%= f.text_field(:end_date, :size => 10, :required => true) %>
+              <%= calendar_for('meeting_end_date') %>
+            </p>
+        <% end %>
+
+        <% if @meeting.safe_attribute? 'recurring_time' %>
+            <p id="">
+            <p>
+              <% recurring = [['single recurring', 1], ['weekly recurring', 2]] %>
+              <%= f.select :recurring_time, options_for_select(recurring, @meeting.recurring_time), :required => true %> </p>
+            <p><%= select_tag :recurring_week_days, options_for_select((1..7).map {|d| [day_name(d), d.to_s]}, (eval("#{@meeting.recurring_week_days}").presence||[]).map(&:to_i)), {:multiple => true} %></p>
+            </p>
+        <% end %>
+
+        <% if @meeting.safe_attribute? 'location' %>
+            <p><%= f.check_box :location, :required => true %> </p>
+            <p><%= text_field_tag :meeting_location_online, @meeting.location_online,
+                                  name: 'meeting[location_online]', disabled: @meeting.location? %> </p>
+        <% end %>
+
+
+        <% user = @project.users.map{|user| [user.name, user.id]} %>
+        <p><label> <%= l(:field_participants) %></label>
+          <%= select_tag :users, options_for_select(user, @meeting.users.map(&:id)), :required => true, multiple: true %> </p>
+      </div>
+      <div class="splitcontentright">
+        <% if @meeting.safe_attribute? 'start_time' %>
+            <span class="clockpicker">
+              <p id="date_in_area">
+                <%= f.text_field(:start_time, :size => 10 , :required => true) %>
+              </p>
+            </span>
+        <% end %>
+      </div>
+      <div class="splitcontentright">
+        <% if @meeting.safe_attribute? 'end_time' %>
+            <span class="clockpicker">
+              <p id="date_in_area">
+                <%= f.text_field(:end_time, :size => 10 , :required => true) %>
+              </p>
+            </span>
+        <% end %>
+      </div>
+    </div>
+    <% if !@meeting.new_record? %>
+        <% if @meeting.safe_attribute?('status') %>
+            <% status = [[l(:label_new), 'new'], [l(:label_completed), 'Completed']] %>
+            <p><%= f.select :status,options_for_select(status, @meeting.status), :required => true %> </p>
+        <% end %>
+        <%= content_tag 'span', :id => "meeting_meeting_minutes_and_toolbar", :style => ('display:none') do %>
+
+            <% if @meeting.safe_attribute?('meeting_minutes')%>
+                <p>
+                  <%= f.label_for_field :meeting_minutes %>
+                  <%= f.text_area :meeting_minutes,
+                                  :cols => 60,
+                                  :rows => (@meeting.meeting_minutes.blank? ? 10 : [[10, @meeting.meeting_minutes.length / 50].max, 100].min),
+                                  :accesskey => accesskey(:edit),
+                                  :class => 'wiki-edit',
+                                  :no_label => true %>
+                  <%= wikitoolbar_for 'meeting_meeting_minutes' %>
+                </p>
+            <% end %>
+        <% end %>
+
+    <% end %>
+    <% if @meeting.safe_attribute? 'custom_field_values' %>
+        <%#= render :partial => 'form_custom_fields' %>
+    <% end %>
+<% end %>
+<script>
+  function check_minutes_meeting(){
+    if($('#meeting_status').val() == 'Completed')
+    {
+      $('#meeting_meeting_minutes').show();
+      $('#meeting_meeting_minutes_and_toolbar').show();
+    }
+
+    else{
+      $('#meeting_meeting_minutes_and_toolbar').hide();
+      $('#meeting_meeting_minutes').hide();
+    }
+  }
+  $(document).ready(function(e){
+    check_minutes_meeting();
+    $('#meeting_status').on('change', function(){
+      check_minutes_meeting();
+    })
+    $('#meeting_location').on('change', function(){
+      $('#meeting_location_online').attr('disabled', $('#meeting_location').prop('checked'))
+    })
+  })
+</script>
+<% include_calendar_headers_tags %>

@@ -1,0 +1,50 @@
+<%= render partial: 'action_menu' %>
+<h2>Meetings</h2>
+<%= form_tag({ :controller => 'meetings', :action => 'index', :project_id => @project },
+             :method => :get, :id => 'query_form') do %>
+    <div id="query_form_with_buttons" class="hide-when-print">
+      <%= hidden_field_tag 'set_filter', '1' %>
+      <div id="query_form_content">
+        <fieldset id="filters" class="collapsible <%= @query.new_record? ? "" : "collapsed" %>">
+          <legend onclick="toggleFieldset(this);"><%= l(:label_filter_plural) %></legend>
+          <div style="<%= @query.new_record? ? "" : "display: none;" %>">
+            <%= render :partial => 'queries/filters', :locals => {:query => @query} %>
+          </div>
+        </fieldset>
+        <fieldset class="collapsible collapsed">
+          <legend onclick="toggleFieldset(this);"><%= l(:label_options) %></legend>
+          <div style="display: none;">
+            <table>
+              <tr>
+                <td><%= l(:field_column_names) %></td>
+                <td><%= render_query_columns_selection(@query) %></td>
+              </tr>
+              <tr>
+                <td><label for='group_by'><%= l(:field_group_by) %></label></td>
+                <td><%= select_tag('group_by',
+                                   options_for_select(
+                                       [[]] + @query.groupable_columns.collect {|c| [c.caption, c.name.to_s]},
+                                       @query.group_by)
+                        ) %></td>
+              </tr>
+              <tr>
+                <td><%= l(:button_show) %></td>
+                <td><%= available_block_columns_tags(@query) %></td>
+              </tr>
+            </table>
+          </div>
+        </fieldset>
+      </div>
+      <p class="buttons">
+        <%= link_to_function l(:button_apply), 'submit_query_form("query_form")', :class => 'icon icon-checked' %>
+        <%= link_to l(:button_clear), { :set_filter => 1}, :class => 'icon icon-reload'  %>
+      </p>
+    </div>
+<% end %>
+
+<% if @meetings.empty? %>
+    <p class="nodata"><%= l(:label_no_data) %></p>
+<% else %>
+    <%= render :partial => 'list', :locals => {:meetings => @meetings, :query => @query} %>
+    <p class="pagination"><%= pagination_links_full @entry_pages, @entry_count %></p>
+<% end %>

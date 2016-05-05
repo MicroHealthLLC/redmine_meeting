@@ -1,0 +1,4 @@
+<div class="contextual">
+  <%= link_to( 'new meeting', new_project_meeting_path(@project) , class: 'icon icon-add') if User.current.allowed_to?(:create_meeting, @project)  %>
+  <%= link_to( 'Edit meeting', edit_project_meeting_path(@project, @meeting) , class: 'icon icon-edit') if User.current.allowed_to?(:edit_meeting, @project) and @meeting && @meeting.editable_by?(User.current)  %>
+</div>

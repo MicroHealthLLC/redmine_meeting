@@ -1,0 +1,18 @@
+# English strings go here for Rails i18n
+en:
+   label_meeting_plural: "Meetings"
+   label_new_meeting: "New meeting"
+   label_edit_meeting: "Edit meeting"
+   field_meeting_minutes: "Meeting minutes"
+   field_agenda: "Agenda"
+   field_date: "Start date"
+   field_end_date: "End date"
+   field_location: "Location"
+   field_participants: "Participants"
+   field_start_time: "Start time"
+   field_end_time: "End time"
+   field_recurring_time: "Recurring"
+   field_recurring_week_days: "Recurring days"
+   field_status: "Status"
+   label_completed: "Completed"
+   field_location_online: "Location"

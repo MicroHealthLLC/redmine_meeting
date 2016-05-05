@@ -1,0 +1,20 @@
+<%= javascript_include_tag 'clockpicker', plugin: 'redmine_meeting' %>
+<%= javascript_include_tag 'jstoolbar/jstoolbar-textile' %>
+
+<%= stylesheet_link_tag 'clockpicker', plugin: 'redmine_meeting' %>
+<%= stylesheet_link_tag 'bootstrap', plugin: 'redmine_meeting' %>
+
+<h2><%= l(:label_edit_meeting) %></h2>
+<div class="box tabular">
+  <div id="all_attributes">
+    <%= form_for @meeting, url: project_meeting_path(@project, @meeting), method: 'put' do |f| %>
+        <%= render :partial => 'form', :locals => {:f => f} %>
+        <%= submit_tag l(:button_update) %>
+    <% end %>
+  </div>
+</div>
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('.clockpicker').clockpicker({autoclose:true});
+  })
+</script>

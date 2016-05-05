@@ -1,0 +1,27 @@
+<%= labelled_fields_for :meeting, @meeting do |f| %>
+    <%= error_messages_for 'meeting' %>
+    <% if @meeting.safe_attribute? 'subject' %>
+        <p><%= f.text_field :subject, :maxlength => 255, :required => true %></p>
+    <% end %>
+
+    <% if @meeting.safe_attribute? 'agenda' %>
+        <p>
+          <%= f.label_for_field :agenda %>
+          <%= link_to_function image_tag('edit.png'), '$(this).hide(); $("#meeting_agenda_and_toolbar").show()' unless @meeting.new_record? %>
+          <%= content_tag 'span', :id => "meeting_agenda_and_toolbar", :style => (@meeting.new_record? ? nil : 'display:none') do %>
+              <%= f.text_area :agenda,
+                              :cols => 60,
+                              :rows => (@meeting.agenda.blank? ? 10 : [[10, @meeting.agenda.length / 50].max, 100].min),
+                              :accesskey => accesskey(:edit),
+                              :class => 'wiki-edit',
+                              :no_label => true,  :required => true %>
+              <%= wikitoolbar_for 'meeting_agenda' %>
+          <% end %>
+        </p>
+    <% end %>
+
+    <div id="attributes" class="attributes">
+      <%= render :partial => 'attributes' %>
+    </div>
+
+<% end %>

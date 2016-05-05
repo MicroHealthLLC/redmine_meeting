@@ -1,0 +1,14 @@
+<ul>
+  <li><%= @meeting.subject %></li>
+  <li><%= l(:field_date) %>:<%= @meeting.date %> - <%= @meeting.start_time %></li>
+  <li><%= l(:field_end_date) %> :<%= @meeting.end_date %> - <%= @meeting.end_time %></li>
+  <li><%= l(:field_location) %> :<%= @meeting.location_online %></li>
+</ul>
+<h5>Participants</h5>
+<ul>
+  <% @meeting.users.each  do |user| %>
+      <li><%= user.name %></li>
+  <% end %>
+</ul>
+<%= textilizable(@meeting, :agenda, :only_path => false) %>
+<hr />

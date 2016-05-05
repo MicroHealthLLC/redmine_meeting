@@ -1,0 +1,36 @@
+<%= render partial: 'action_menu' %>
+<h2> <%= @meeting.subject %><%= "(#{@meeting.status})" %></h2>
+<div class="issue details">
+  <p class="author">
+    <%= authoring @meeting.created_at, @meeting.user %>.
+    <% if @meeting.created_at != @meeting.updated_at %>
+        <%= l(:label_updated_time, time_tag(@meeting.updated_at)).html_safe %>.
+    <% end %>
+  </p>
+
+  <table class="attributes">
+    <%= issue_fields_rows do |rows|
+      rows.left l(:field_date) , format_date(@meeting.date)
+      rows.left l(:field_start_time) , @meeting.start_time
+      rows.right l(:field_end_date) , @meeting.end_date
+      rows.right l(:field_end_time) , @meeting.end_time
+      rows.left l(:field_participants), @meeting.users.map(&:to_s).join('<br/>').html_safe
+    end %>
+  </table>
+  <hr />
+  <div class="description">
+    <p><strong><%=l(:field_agenda)%></strong></p>
+    <div class="wiki">
+      <%= textilizable @meeting, :agenda%>
+    </div>
+  </div>
+  <% if @meeting.status.to_s.capitalize != 'New' %>
+      <hr />
+      <div class="description">
+        <p><strong><%=l(:field_meeting_minutes)%></strong></p>
+        <div class="wiki">
+          <%= textilizable @meeting, :meeting_minutes%>
+        </div>
+      </div>
+  <% end %>
+</div>
