@@ -66,7 +66,6 @@ class Meeting < ActiveRecord::Base
       Array(e).include?(day.cwday.to_s) &&
           self.date <= day &&  day <= self.end_date
     elsif self.recurring_time == '3'
-      Array(e).include?(day.mday.to_s) &&
           self.date <= day &&  day <= self.end_date
     else
       false
