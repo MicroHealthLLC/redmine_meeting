@@ -1,4 +1,5 @@
-<%= render partial: 'action_menu' %>
+<h2>This is an invitation for a meeting</h2>
+<p>
 <h2> <%= @meeting.subject %><%= "(#{@meeting.status})" %></h2>
 <div class="issue details">
   <p class="author">
@@ -25,13 +26,9 @@
       <%= textilizable @meeting, :agenda%>
     </div>
   </div>
-  <% if @meeting.status.to_s.capitalize != 'New' %>
-      <hr />
-      <div class="description">
-        <p><strong><%=l(:field_meeting_minutes)%></strong></p>
-        <div class="wiki">
-          <%= textilizable @meeting, :meeting_minutes%>
-        </div>
-      </div>
-  <% end %>
 </div>
+</p>
+<p>
+<h4>Click <%= link_to 'here', not_participating_project_meeting_path(@project, @meeting) %> if you do not want to participate for this meeting</h4>
+
+</p>

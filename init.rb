@@ -2,7 +2,7 @@ Redmine::Plugin.register :redmine_meeting do
   name 'Redmine Meeting plugin'
   author 'Bilel Kedidi'
   description 'This is a plugin for Redmine'
-  version '1.0.1'
+  version '1.1.0'
 
   project_module :redmine_meeting do
     permission :view_meeting_calendar, :meetings => [:calendar]
@@ -12,7 +12,7 @@ Redmine::Plugin.register :redmine_meeting do
   end
 
   menu :project_menu, :meetings,
-       {:controller => 'meetings', :action => 'index'},
+       {:controller => 'meetings', :action => 'calendar'},
        :caption => :label_meeting_plural,
        :before => :activity, param: :project_id
 end

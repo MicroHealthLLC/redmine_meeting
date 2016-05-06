@@ -90,4 +90,10 @@ class Meeting < ActiveRecord::Base
     end
   end
 
+  def self.turn_to_completed
+    Meeting.where("end_date IS NOT NULL AND end_date < ? AND status= 'New'", Date.today).update_all(status: 'Completed')
+  end
+
+
+
 end

@@ -1,9 +1,9 @@
 <%= labelled_fields_for :meeting, @meeting do |f| %>
 
     <% if @meeting.safe_attribute? 'location' %>
-        <p><%= f.check_box :location, :required => true %> </p>
+        <label><%= l(:field_location) %></label>
         <p><%= text_field_tag :meeting_location_online, @meeting.location_online,
-                              name: 'meeting[location_online]', disabled: @meeting.location?, :maxlength => 255, size: 255%> </p>
+                              name: 'meeting[location_online]', :maxlength => 255, size: 255%> </p>
     <% end %>
     <div class="splitcontent">
       <div class="splitcontentleft">
@@ -24,7 +24,7 @@
         <% if @meeting.safe_attribute? 'recurring_time' %>
             <p id="">
             <p>
-              <% recurring = [['single recurring', 1], ['Daily', 3], ['weekly recurring', 2]] %>
+              <% recurring = [['One time event', 1], ['Daily', 3], ['weekly recurring', 2]] %>
               <%= f.select :recurring_time, options_for_select(recurring, @meeting.recurring_time), :required => true %> </p>
             <p><%= select_tag :recurring_week_days, options_for_select((1..7).map {|d| [day_name(d), d.to_s]}, (eval("#{@meeting.recurring_week_days}").presence||[]).map(&:to_i)), {:multiple => true} %></p>
             </p>
@@ -96,9 +96,6 @@
     $('#meeting_status').on('change', function(){
       check_minutes_meeting();
     })
-    $('#meeting_location').on('change', function(){
-      $('#meeting_location_online').attr('disabled', $('#meeting_location').prop('checked'))
-    });
     $('#meeting_recurring_time').on('change', function(e){
       display_option()
     })

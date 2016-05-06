@@ -12,3 +12,7 @@
 </ul>
 <%= textilizable(@meeting, :agenda, :only_path => false) %>
 <hr />
+
+<p>
+  If you want to do not participate, please click <%= link_to 'here', participate_project_meeting_url(@meeting.project, @meeting) %>
+</p>

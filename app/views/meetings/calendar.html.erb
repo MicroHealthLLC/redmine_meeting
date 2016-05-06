@@ -1,3 +1,4 @@
+<%= render partial: 'action_menu' %>
 <h2><%= @query.new_record? ? l(:label_calendar) : @query.name %></h2>
 
 <%= form_tag({:controller => 'meetings', :action => 'calendar', :project_id => @project},

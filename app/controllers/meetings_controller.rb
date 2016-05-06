@@ -2,8 +2,8 @@ class MeetingsController < ApplicationController
   unloadable
 
   before_filter :find_project_by_project_id
-  before_filter :authorize
-  before_filter :get_meeting, only: [:edit, :update, :destroy, :show]
+  before_filter :authorize, except: [:calendar, :participate, :not_participating]
+  before_filter :get_meeting, only: [:edit, :update, :destroy, :show, :participate, :not_participating]
 
 
   helper :custom_fields
@@ -78,7 +78,20 @@ class MeetingsController < ApplicationController
     else
       render :new
     end
+  end
 
+  def participate
+    meeting_user = @meeting.meeting_users.where(user_id: User.current.id).first
+    if !meeting_user
+      flash[:error] = 'You are not belong to this meeting'
+      redirect_to calendar_project_meetings_path(@meeting.project)
+    end
+  end
+
+  def not_participating
+    meeting_user = @meeting.meeting_users.where(user_id: User.current.id).first
+    meeting_user.delete if meeting_user
+    redirect_to calendar_project_meetings_path(@meeting.project, @meeting)
   end
 
   def show
@@ -93,8 +106,12 @@ class MeetingsController < ApplicationController
     @meeting.safe_attributes= params[:meeting].permit!
 
     if @meeting.save
+      new_users = params[:users].map(&:to_i) - @meeting.users.map(&:id)
       users = User.where(id: params[:users])
       @meeting.users= users
+      if new_users.present?
+        Mailer.deliver_send_meeting(@meeting, User.where(id: new_users))
+      end
       flash[:notice] = "Meeting updated successfully"
       redirect_back_or_default project_meetings_path(@project)
     else
@@ -126,8 +143,6 @@ class MeetingsController < ApplicationController
       @events += @q2.results_scope(:conditions => ["status=='New' AND (date BETWEEN ? AND ? AND recurring_time = 1) OR (date BETWEEN ? AND ? AND end_date BETWEEN ? AND ? AND recurring_time != 1)", @calendar.startdt, @calendar.enddt,@calendar.startdt, @calendar.enddt,@calendar.startdt, @calendar.enddt])
 
       @calendar.events = @events
-
-
     end
   end
 
@@ -135,5 +150,7 @@ class MeetingsController < ApplicationController
 
   def get_meeting
     @meeting = Meeting.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    render_404
   end
 end
