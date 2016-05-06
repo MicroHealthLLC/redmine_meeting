@@ -1,8 +1,10 @@
 <%= labelled_fields_for :meeting, @meeting do |f| %>
 
     <% if @meeting.safe_attribute? 'location' %>
-        <label><%= l(:field_location) %></label>
-        <p><%= text_field_tag :meeting_location_online, @meeting.location_online,
+
+        <p>
+          <label><%= l(:field_location) %></label>
+          <%= text_field_tag :meeting_location_online, @meeting.location_online,
                               name: 'meeting[location_online]', :maxlength => 255, size: 255%> </p>
     <% end %>
     <div class="splitcontent">
