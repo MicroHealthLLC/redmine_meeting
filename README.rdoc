@@ -1,5 +1,7 @@
 = redmine_meeting
 
+Calendaring function to schedule meetings much like outlook or gmail or yahoo mail you get the picture
+
 git clone in the plugin directory
 
 then 
