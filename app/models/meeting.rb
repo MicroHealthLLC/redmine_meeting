@@ -59,13 +59,14 @@ class Meeting < ActiveRecord::Base
   end
 
   def can_show?(day)
+    e = eval("#{self.recurring_week_days}")
     if self.recurring_time == '1'
       day == self.date
     elsif self.recurring_time == '2'
-      Array(eval(self.recurring_week_days)).include?(day.cwday.to_s) &&
+      Array(e).include?(day.cwday.to_s) &&
           self.date <= day &&  day <= self.end_date
     elsif self.recurring_time == '3'
-      Array(eval(self.recurring_week_days)).include?(day.mday.to_s) &&
+      Array(e).include?(day.mday.to_s) &&
           self.date <= day &&  day <= self.end_date
     else
       false
