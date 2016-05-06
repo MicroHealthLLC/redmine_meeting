@@ -15,13 +15,6 @@ Redmine::Plugin.register :redmine_meeting do
        {:controller => 'meetings', :action => 'index'},
        :caption => :label_meeting_plural,
        :before => :activity, param: :project_id
-
-  menu :project_menu, :calendar_meetings,
-       {:controller => 'meetings', :action => 'calendar'},
-       :caption => 'Meeting calendar',
-       :after => :meetings, param: :project_id
-
-
 end
 
 

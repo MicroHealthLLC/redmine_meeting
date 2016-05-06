@@ -13,11 +13,17 @@
           <% @events.select{|meeting|
             meeting.can_show?(day)
           }.each do |i| %>
-              <div class="issue" >
+              <div class="issue tooltip" >
                 <%= image_tag('group.png') %>
                 <%= h("#{i.project} -") unless @project && @project == i.project %>
                 <%= link_to i.subject, "#{i.id}"%>
-                <span class="tip"></span>
+                <span class="tip">
+                  <%= link_to( i.subject, "#{i.id}" )+ "<br /><br />".html_safe +
+                          "<strong>#{l(:field_date)}</strong>: #{format_date(i.date)}- #{i.start_time}<br />".html_safe +
+                          "<strong>#{l(:field_end_date)}</strong>: #{format_date(i.end_date)}- #{ i.end_time}<br />".html_safe +
+                          "<strong>#{l(:field_location)}</strong>: #{i.location_online}<br />".html_safe
+                  %>
+                      </span>
               </div>
           <% end %>
         </td>
