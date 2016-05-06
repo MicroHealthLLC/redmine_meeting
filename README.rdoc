@@ -4,6 +4,10 @@ git clone in the plugin directory
 
 then 
 
+bundle install
+
+then 
+
 bundle exec rake redmine:plugins:migrate RAILS_ENV=production
 
 then 
