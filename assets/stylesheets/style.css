@@ -1,6 +1,7 @@
 .schedule{
     position: absolute;
     width: 90%;
+    height: 35px;
     background-color: #c0392b;
     border: #ecf0f1 solid 1px;
     padding: 3px;
@@ -9,6 +10,7 @@
     position: absolute;
     margin-left: 40px;
     width: 90%;
+    height: 35px;
     background-color: #2980b9;
     padding: 3px;
 }
