@@ -1,0 +1,14 @@
+.schedule{
+    position: absolute;
+    width: 90%;
+    background-color: #c0392b;
+    border: #ecf0f1 solid 1px;
+    padding: 3px;
+}
+.event{
+    position: absolute;
+    margin-left: 40px;
+    width: 90%;
+    background-color: #2980b9;
+    padding: 3px;
+}

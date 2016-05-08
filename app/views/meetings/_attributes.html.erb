@@ -48,7 +48,7 @@
         <% if @meeting.safe_attribute? 'end_time' %>
             <span class="clockpicker">
               <p id="date_in_area">
-                <%= f.text_field(:end_time, :size => 10 , :required => true) %>
+                <%= f.text_field(:end_time, :size => 10) %>
               </p>
             </span>
         <% end %>

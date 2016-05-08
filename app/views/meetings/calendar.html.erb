@@ -21,17 +21,34 @@
 <% end %>
 
 <%= error_messages_for 'query' %>
-<% if @query.valid? %>
-    <%= render :partial => 'calendar', :locals => {:calendar => @calendar} %>
-    <p class="legend cal">
-      <span class="starting"><%= l(:text_tip_issue_begin_day) %></span>
-      <span class="ending"><%= l(:text_tip_issue_end_day) %></span>
-      <span class="starting ending"><%= l(:text_tip_issue_begin_end_day) %></span>
-    </p>
-<% end %>
+<div id="calendar_meeting" style="width: 100%; float: left;">
+  <% if @query.valid? %>
+      <%= render :partial => 'calendar', :locals => {:calendar => @calendar} %>
+      <p class="legend cal">
+        <span class="starting"><%= l(:text_tip_issue_begin_day) %></span>
+        <span class="ending"><%= l(:text_tip_issue_end_day) %></span>
+        <span class="starting ending"><%= l(:text_tip_issue_begin_end_day) %></span>
+      </p>
+  <% end %>
+</div>
+<div id='schedule_meeting' style="width: 25%; float: right; display: none;">
+  <!-- THis section os for schedule plugin -->
 
+</div>
+<div class="clear"></div>
 <% content_for :sidebar do %>
-    <%= render :partial => 'issues/sidebar' %>
+
 <% end %>
+<script>
+    $(document).ready(function(){
+        $('.calendar_day').on('click', function(){
+            query = 'year=<%= @year.inspect.html_safe %>&month=<%= @month.inspect.html_safe %>';
+            query+= '&day='+$(this).find('.day-num').text();
+            $.getScript('schedule.js?'+query)
+        });
+    })
+</script>
+<%= javascript_include_tag 'jquery.graspSchedule.min.js', plugin: 'redmine_meeting' %>
+<%= stylesheet_link_tag 'style', plugin: 'redmine_meeting' %>
 
 <% html_title(l(:label_calendar)) -%>

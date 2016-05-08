@@ -1,0 +1,42 @@
+  <script type="text/javascript">
+    $(document).ready(function(){
+      var schedules = [ //"schedules" is list for events which have start and end.
+        <% @schedules_array.each do |schedule| %>
+        {
+          end: <%= schedule[:end].inspect.html_safe  %>,
+          start: <%= schedule[:start].inspect.html_safe  %>,
+          title: <%= schedule[:title].inspect.html_safe  %>,
+          css:{backgroundColor:"#f39c12" }
+        },
+        <% end %>
+      ];
+      var events = [ //"events" is list for events which have only one time.
+        <% @events_array.each do |event| %>
+        {
+          date: <%= event[:date].inspect.html_safe  %>,
+          title: <%= event[:title].inspect.html_safe  %>
+        }
+        <% end %>
+      ];
+
+      $('#schedule').graspSchedule({
+        schedules:schedules,
+        events:events,
+        options:{ // You can change default setting. Not require.
+          classnames: { //If you use this plugin many time in a page, you have to change these.
+            schedule: "schedule",
+            event: "event",
+            time: "time"
+          },
+          time:false,//show time on left side
+          insideTime:true,//show time inside
+          timeFormat:'yyyy/MM/dd(ddd)HH:mm',
+          daysFormat:['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+        }
+      });
+
+    });
+  </script>
+
+
+<div id="schedule"></div>

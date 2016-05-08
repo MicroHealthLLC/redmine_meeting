@@ -2,7 +2,7 @@ class MeetingsController < ApplicationController
   unloadable
 
   before_filter :find_project_by_project_id
-  before_filter :authorize, except: [:calendar, :participate, :not_participating]
+  before_filter :authorize, except: [:calendar, :participate, :not_participating, :schedule]
   before_filter :get_meeting, only: [:edit, :update, :destroy, :show, :participate, :not_participating]
 
 
@@ -39,6 +39,7 @@ class MeetingsController < ApplicationController
         else
           @limit = per_page_option
       end
+      sort_clause ||= 'date DESC, start_time ASC'
       scope = @query.results_scope(:order => sort_clause)
       @entry_count = scope.count
       @entry_pages = Paginator.new @entry_count, per_page_option, params['page']
@@ -143,6 +144,50 @@ class MeetingsController < ApplicationController
       @events += @q2.results_scope(:conditions => ["status=='New' AND (date BETWEEN ? AND ? AND recurring_time = 1) OR (date BETWEEN ? AND ? AND end_date BETWEEN ? AND ? AND recurring_time != 1)", @calendar.startdt, @calendar.enddt,@calendar.startdt, @calendar.enddt,@calendar.startdt, @calendar.enddt])
 
       @calendar.events = @events
+    end
+  end
+
+  def schedule
+    if params[:year] and params[:year].to_i > 1900
+      @year = params[:year].to_i
+      if params[:month] and params[:month].to_i > 0 and params[:month].to_i < 13
+        @month = params[:month].to_i
+        if params[:day] and params[:day].to_i > 0 and params[:day].to_i < 32
+          @day = params[:day].to_i
+        end
+      end
+    end
+    @year ||= Date.today.year
+    @month ||= Date.today.month
+    @day ||= Date.today.day
+
+    @calendar = Redmine::Helpers::Calendar.new(Date.civil(@year, @month, 1), current_language, :month)
+    retrieve_query
+    @query.group_by = nil
+    if @query.valid?
+      @events = []
+      @q2 = MeetingQuery.build_from_params(params, :name => '_')
+      @events += @q2.results_scope(:conditions => ["status=='New' AND (date BETWEEN ? AND ? AND recurring_time = 1) OR (date BETWEEN ? AND ? AND end_date BETWEEN ? AND ? AND recurring_time != 1)", @calendar.startdt, @calendar.enddt,@calendar.startdt, @calendar.enddt,@calendar.startdt, @calendar.enddt])
+
+      day = "#{@day}/#{@month}/#{@year}".to_date
+      @schedules_array = []
+      @events_array= []
+      @events.select{|meeting|
+        meeting.can_show?(day)
+      }.sort_by{|a| a.start_time}.each do |meeting|
+        if meeting.end_time.presence
+          @schedules_array<<{
+              start: "#{day.strftime('%Y/%m/%d')} #{meeting.start_time}",
+              end: "#{day.strftime('%Y/%m/%d')} #{meeting.end_time}",
+              title: meeting.subject
+          }
+        else
+          @events_array<<{
+              date: "#{day.strftime('%Y/%m/%d')} #{meeting.start_time}",
+              title: meeting.subject
+          }
+        end
+      end
     end
   end
 
