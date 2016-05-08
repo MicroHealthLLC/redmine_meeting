@@ -68,7 +68,7 @@ class Meeting < ActiveRecord::Base
     if self.recurring_type == '1' # one time
       return day == self.date
     elsif self.recurring_type == '2' # daily
-      return Array(e).include?(day.cwday.to_s) && self.date <= day &&  day <= self.end_date
+      return self.date <= day &&  day <= self.end_date
     elsif self.recurring_type == '3' #weekly
       w_recurring = self.weekly_recurring.to_i
       cweek = day.cweek
