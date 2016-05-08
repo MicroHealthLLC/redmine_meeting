@@ -13,7 +13,7 @@ class Meeting < ActiveRecord::Base
   validates_presence_of :meeting_minutes, :if => :check_status
 
   store :schedule,
-        accessors: %w(recurring_type recurring_time weekly_recurring monthly_recurring days_recurring)
+        accessors: %w(recurring_type weekly_recurring monthly_recurring days_recurring)
 
 
   safe_attributes 'subject',
