@@ -23,14 +23,7 @@
             </p>
         <% end %>
 
-        <% if @meeting.safe_attribute? 'recurring_time' %>
-            <p id="">
-            <p>
-              <% recurring = [['One time event', 1], ['Daily', 3], ['weekly recurring', 2]] %>
-              <%= f.select :recurring_time, options_for_select(recurring, @meeting.recurring_time), :required => true %> </p>
-            <p><%= select_tag :recurring_week_days, options_for_select((1..7).map {|d| [day_name(d), d.to_s]}, (eval("#{@meeting.recurring_week_days}").presence||[]).map(&:to_i)), {:multiple => true} %></p>
-            </p>
-        <% end %>
+       <%= render partial: 'set_recurring', locals:{meeting: @meeting, f: f} %>
         <% user = @project.users.map{|user| [user.name, user.id]} %>
         <p><label> <%= l(:field_participants) %></label>
           <%= select_tag :users, options_for_select(user, @meeting.users.map(&:id)), :required => true, multiple: true %> </p>
@@ -98,22 +91,7 @@
     $('#meeting_status').on('change', function(){
       check_minutes_meeting();
     })
-    $('#meeting_recurring_time').on('change', function(e){
-      display_option()
-    })
-    display_option();
   });
-    function display_option()
-    {
-      v = $('#meeting_recurring_time').val();
-      if(v == '1' || v == '3')
-      {
-        $('#recurring_week_days').hide();
-      }
-      else {
-        $('#recurring_week_days').show();
-      }
 
-    }
 </script>
 <% include_calendar_headers_tags %>

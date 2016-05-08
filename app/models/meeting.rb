@@ -12,13 +12,19 @@ class Meeting < ActiveRecord::Base
   validates_presence_of :subject, :date, :start_time, :status, :project_id, :user_id
   validates_presence_of :meeting_minutes, :if => :check_status
 
+  store :schedule,
+        accessors: %w(recurring_type recurring_time weekly_recurring monthly_recurring days_recurring)
+
+
   safe_attributes 'subject',
                   'location',
                   'location_online',
                   'project_id',
                   'user_id',
-                  'recurring_time',
-                  'recurring_week_days',
+                  'recurring_type',
+                  'days_recurring',
+                  'weekly_recurring',
+                  'monthly_recurring',
                   'end_time',
                   'start_time',
                   'status',
@@ -59,17 +65,25 @@ class Meeting < ActiveRecord::Base
   end
 
   def can_show?(day)
-    e = eval("#{self.recurring_week_days}")
-    if self.recurring_time == '1'
-      day == self.date
-    elsif self.recurring_time == '2'
-      Array(e).include?(day.cwday.to_s) &&
-          self.date <= day &&  day <= self.end_date
-    elsif self.recurring_time == '3'
-          self.date <= day &&  day <= self.end_date
+    if self.recurring_type == '1' # one time
+      return day == self.date
+    elsif self.recurring_type == '2' # daily
+      return Array(e).include?(day.cwday.to_s) && self.date <= day &&  day <= self.end_date
+    elsif self.recurring_type == '3' #weekly
+      w_recurring = self.weekly_recurring.to_i
+      cweek = day.cweek
+      if ((cweek-self.date.cweek)%w_recurring).zero? &&  self.date <= day &&  day <= self.end_date
+        return true if self.days_recurring.include?("#{day.cwday}")
+      end
+    elsif  self.recurring_type == '4'
+      return false if self.monthly_recurring.nil?
+      return self.monthly_recurring.first.split(',').map(&:strip).include?day.strftime('%m/%d/%Y')
     else
       false
     end
+    false
+  rescue
+    false
   end
 
   def self.find_coming_meeting(hours=6)

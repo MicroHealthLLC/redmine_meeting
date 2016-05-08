@@ -1,0 +1,54 @@
+
+<% if meeting.safe_attribute? 'recurring_type' %>
+    <p id="">
+    <p>
+      <% recurring = [['One time event', 1], ['Daily', 2], ['weekly recurring', 3], ['...', 4]] %>
+      <%= f.select :recurring_type, options_for_select(recurring, meeting.recurring_type), :required => true %>
+    </p>
+    <p id="weekly_schedule">
+      <% week = [['week', 1], ['2 weeks', 2], ['3 weeks', 3], ['4 weeks', 4]] %>
+      Every <%= select_tag 'schedule[weekly_recurring]', options_for_select(week, meeting.weekly_recurring), :required => true %>
+      <% (1..7).map {|d| [day_name(d), d.to_s]}.each do |day, day_id| %>
+          <label class="floating">
+            <%= check_box_tag 'schedule[days_recurring][]', day_id, meeting.days_recurring.try(:include?, day_id) %>
+            <%= day %>
+          </label>
+        <% end %>
+    </p>
+    <p id="monthly_schedule">
+      <%= text_field_tag 'schedule[monthly_recurring][]' %>
+    </p>
+<% end %>
+
+
+<%= javascript_include_tag 'jquery-ui.multidatespicker.js', plugin: 'redmine_meeting' %>
+<script>
+
+  $(document).ready(function(){
+    $('#meeting_recurring_type').on('change', function(e){
+      display_option()
+    });
+    display_option();
+    $('#schedule_monthly_recurring_').multiDatesPicker();
+  });
+
+
+  function display_option()
+  {
+    v = $('#meeting_recurring_type').val();
+    if(v == '1' || v == '2')
+    {
+      $('#weekly_schedule').hide();
+      $('#monthly_schedule').hide();
+    }
+    else if(v == '3') {
+      $('#weekly_schedule').show();
+      $('#monthly_schedule').hide();
+    }
+    else
+    {
+      $('#monthly_schedule').show();
+    }
+
+  }
+</script>

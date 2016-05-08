@@ -66,7 +66,7 @@ class MeetingsController < ApplicationController
                            status: 'New',
                            user_id: User.current.id)
 
-    @meeting.safe_attributes= params[:meeting].merge({recurring_week_days: params[:recurring_week_days]}).permit!
+    @meeting.safe_attributes= params[:meeting].merge(params[:schedule]).permit!
 
     if @meeting.save
       users = User.where(id: params[:users])

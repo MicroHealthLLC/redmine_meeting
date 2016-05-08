@@ -11,7 +11,7 @@ en:
    field_participants: "Participants"
    field_start_time: "Start time"
    field_end_time: "End time"
-   field_recurring_time: "Recurring"
+   field_recurring_type: "Recurring"
    field_recurring_week_days: "Recurring days"
    field_status: "Status"
    label_completed: "Completed"
