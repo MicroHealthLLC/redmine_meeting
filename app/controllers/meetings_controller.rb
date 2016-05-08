@@ -179,12 +179,12 @@ class MeetingsController < ApplicationController
           @schedules_array<<{
               start: "#{day.strftime('%Y/%m/%d')} #{meeting.start_time}",
               end: "#{day.strftime('%Y/%m/%d')} #{meeting.end_time}",
-              title: meeting.subject
+              title: "#{meeting.subject}--#{meeting.location_online}"
           }
         else
           @events_array<<{
               date: "#{day.strftime('%Y/%m/%d')} #{meeting.start_time}",
-              title: meeting.subject
+              title: "#{meeting.subject} --#{meeting.location_online}"
           }
         end
       end
