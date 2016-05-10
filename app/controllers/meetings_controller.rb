@@ -141,7 +141,7 @@ class MeetingsController < ApplicationController
     if @query.valid?
       @events = []
       @q2 = MeetingQuery.build_from_params(params, :name => '_')
-      @events += @q2.results_scope(:conditions => ["status=='New' AND (date BETWEEN ? AND ? AND recurring_time = 1) OR (date BETWEEN ? AND ? AND end_date BETWEEN ? AND ? AND recurring_time != 1)", @calendar.startdt, @calendar.enddt,@calendar.startdt, @calendar.enddt,@calendar.startdt, @calendar.enddt])
+      @events = Meeting.visible.where(status:'New').where("(date BETWEEN ? AND ?) OR (end_date BETWEEN ? AND ?)", @calendar.startdt, @calendar.enddt,@calendar.startdt, @calendar.enddt)
 
       @calendar.events = @events
     end

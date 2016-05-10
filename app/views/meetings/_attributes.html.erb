@@ -49,7 +49,7 @@
     </div>
     <% if !@meeting.new_record? %>
         <% if @meeting.safe_attribute?('status') %>
-            <% status = [[l(:label_new), 'new'], [l(:label_completed), 'Completed']] %>
+            <% status = [[l(:label_scheduled), 'new'], [l(:label_completed), 'Completed'], [l(:label_cancelled), 'Cancelled']] %>
             <p><%= f.select :status,options_for_select(status, @meeting.status), :required => true %> </p>
         <% end %>
         <%= content_tag 'span', :id => "meeting_meeting_minutes_and_toolbar", :style => ('display:none') do %>

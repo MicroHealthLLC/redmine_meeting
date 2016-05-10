@@ -38,7 +38,7 @@ class Meeting < ActiveRecord::Base
     if User.current.admin?
       includes(:project)
     else
-      includes(:project, :meeting_users).where("meeting_users.user_id= ? OR #{table_name}.user_id = ?", User.current.id, User.current.id)
+      includes(:project, :meeting_users).references(:project, :meeting_users).where("meeting_users.user_id= ? OR #{table_name}.user_id = ?", User.current.id, User.current.id)
     end
   }
 
@@ -77,7 +77,8 @@ class Meeting < ActiveRecord::Base
       end
     elsif  self.recurring_type == '4'
       return false if self.monthly_recurring.nil?
-      return self.monthly_recurring.first.split(',').map(&:strip).include?day.strftime('%m/%d/%Y')
+      dates = self.monthly_recurring.first.split(',').map(&:strip)
+      return true if  dates.include?(day.strftime('%-m/%-d/%Y')) or dates.include?(day.strftime('%-m/%-d/%y'))
     else
       false
     end

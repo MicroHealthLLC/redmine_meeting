@@ -14,5 +14,7 @@ en:
    field_recurring_type: "Recurring"
    field_recurring_week_days: "Recurring days"
    field_status: "Status"
+   label_scheduled: "Scheduled"
    label_completed: "Completed"
+   label_cancelled: "Cancelled"
    field_location_online: "Location"
