@@ -73,7 +73,7 @@ class Meeting < ActiveRecord::Base
   end
 
   def editable_by?(usr= User.current)
-    usr == user && usr.allowed_to?(:edit_meeting, project)
+    User.current.admin? or usr == user && usr.allowed_to?(:edit_meeting, project)
   end
 
   # Returns true if the attribute is required for user
