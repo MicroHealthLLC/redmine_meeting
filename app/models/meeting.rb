@@ -89,6 +89,7 @@ class Meeting < ActiveRecord::Base
         return self.date <= day &&  day <= self.end_date
       when MeetingRecurringType::WEEKLY then
         w_recurring = self.weekly_recurring.to_i
+        return false if self.days_recurring.nil?
         cweek = day.cweek
         if ((cweek-self.date.cweek)%w_recurring).zero? &&  self.date <= day &&  day <= self.end_date
           return true if self.days_recurring.include?("#{day.cwday}")
