@@ -10,7 +10,7 @@ class Meeting < ActiveRecord::Base
 
 
   validates_presence_of :subject, :date, :start_time, :status, :project_id, :user_id
-  validates_presence_of :meeting_minutes, :if => :check_status
+  # validates_presence_of :meeting_minutes, :if => :check_status
 
   store :schedule,
         accessors: %w(recurring_type weekly_recurring monthly_recurring days_recurring)
@@ -50,10 +50,10 @@ class Meeting < ActiveRecord::Base
     date
   end
 
-  def check_status
-    return false if status.camelcase == 'New'
-    true
-  end
+  # def check_status
+  #   return false if status.camelcase == 'New'
+  #   true
+  # end
 
   def editable_by?(usr= User.current)
     usr == user && usr.allowed_to?(:edit_meeting, project)
