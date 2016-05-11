@@ -82,17 +82,29 @@ class Meeting < ActiveRecord::Base
   end
 
   def can_show?(day)
+    return false if self.date.nil?
+
     case self.recurring_type.to_i
       when MeetingRecurringType::ONE_TIME then
         return day == self.date
       when MeetingRecurringType::DAILY then
+        if self.end_date.nil?
+          return self.date <= day
+        end
         return self.date <= day &&  day <= self.end_date
       when MeetingRecurringType::WEEKLY then
         w_recurring = self.weekly_recurring.to_i
         return false if self.days_recurring.nil?
         cweek = day.cweek
-        if ((cweek-self.date.cweek)%w_recurring).zero? &&  self.date <= day &&  day <= self.end_date
-          return true if self.days_recurring.include?("#{day.cwday}")
+
+        if self.end_date.nil?
+          if ((cweek-self.date.cweek)%w_recurring).zero? &&  self.date <= day
+            return true if self.days_recurring.include?("#{day.cwday}")
+          end
+        else
+          if ((cweek-self.date.cweek)%w_recurring).zero? &&  self.date <= day &&  day <= self.end_date
+            return true if self.days_recurring.include?("#{day.cwday}")
+          end
         end
       when MeetingRecurringType::CUSTOM then
         return false if self.monthly_recurring.nil?
