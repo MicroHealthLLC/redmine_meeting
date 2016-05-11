@@ -1,5 +1,14 @@
 class Meeting < ActiveRecord::Base
   unloadable
+
+  class MeetingRecurringType
+    ONE_TIME = 1
+    DAILY    = 2
+    WEEKLY   = 3
+    CUSTOM   = 4
+  end
+
+
   include Redmine::SafeAttributes
 
   belongs_to :user
@@ -11,6 +20,7 @@ class Meeting < ActiveRecord::Base
 
   validates_presence_of :subject, :date, :start_time, :status, :project_id, :user_id
   # validates_presence_of :meeting_minutes, :if => :check_status
+  validates_presence_of :days_recurring, :if => :check_days_recurring
 
   store :schedule,
         accessors: %w(recurring_type weekly_recurring monthly_recurring days_recurring)
@@ -50,10 +60,17 @@ class Meeting < ActiveRecord::Base
     date
   end
 
-  # def check_status
-  #   return false if status.camelcase == 'New'
-  #   true
-  # end
+  def check_days_recurring
+    if self.recurring_type.to_i == MeetingRecurringType::WEEKLY
+      if self.days_recurring.map(&:presence).compact.blank?
+        errors.add(:base, 'For weekly recurring, you have to choose at least one day.')
+      end
+    elsif self.recurring_type.to_i == MeetingRecurringType::CUSTOM
+      if self.monthly_recurring.join('').strip.blank?
+        errors.add(:base, 'For monthly recurring, you have to choose at least one day.')
+      end
+    end
+  end
 
   def editable_by?(usr= User.current)
     usr == user && usr.allowed_to?(:edit_meeting, project)
@@ -65,26 +82,24 @@ class Meeting < ActiveRecord::Base
   end
 
   def can_show?(day)
-    if self.recurring_type == '1' # one time
-      return day == self.date
-    elsif self.recurring_type == '2' # daily
-      return self.date <= day &&  day <= self.end_date
-    elsif self.recurring_type == '3' #weekly
-      w_recurring = self.weekly_recurring.to_i
-      cweek = day.cweek
-      if ((cweek-self.date.cweek)%w_recurring).zero? &&  self.date <= day &&  day <= self.end_date
-        return true if self.days_recurring.include?("#{day.cwday}")
-      end
-    elsif  self.recurring_type == '4'
-      return false if self.monthly_recurring.nil?
-      dates = self.monthly_recurring.first.split(',').map(&:strip)
-      return true if  dates.include?(day.strftime('%-m/%-d/%Y')) or dates.include?(day.strftime('%-m/%-d/%y'))
-    else
-      false
+    case self.recurring_type.to_i
+      when MeetingRecurringType::ONE_TIME then
+        return day == self.date
+      when MeetingRecurringType::DAILY then
+        return self.date <= day &&  day <= self.end_date
+      when MeetingRecurringType::WEEKLY then
+        w_recurring = self.weekly_recurring.to_i
+        cweek = day.cweek
+        if ((cweek-self.date.cweek)%w_recurring).zero? &&  self.date <= day &&  day <= self.end_date
+          return true if self.days_recurring.include?("#{day.cwday}")
+        end
+      when MeetingRecurringType::CUSTOM then
+        return false if self.monthly_recurring.nil?
+        dates = self.monthly_recurring.first.split(',').map(&:strip)
+        return true if  dates.include?(day.strftime('%-m/%-d/%Y')) or dates.include?(day.strftime('%-m/%-d/%y'))
+      else
+        false
     end
-    false
-  rescue
-    false
   end
 
   def self.find_coming_meeting(hours=6)

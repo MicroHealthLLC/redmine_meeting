@@ -104,7 +104,7 @@ class MeetingsController < ApplicationController
   end
 
   def update
-    @meeting.safe_attributes= params[:meeting].permit!
+    @meeting.safe_attributes= params[:meeting].merge(params[:schedule]).permit!
 
     if @meeting.save
       new_users = params[:users].map(&:to_i) - @meeting.users.map(&:id)

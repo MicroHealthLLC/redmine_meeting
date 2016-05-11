@@ -14,6 +14,7 @@
             <%= day %>
           </label>
         <% end %>
+      <%= hidden_field_tag 'schedule[days_recurring][]', '' %>
     </p>
     <p id="monthly_schedule">
       <%= text_field_tag 'schedule[monthly_recurring][]' %>
