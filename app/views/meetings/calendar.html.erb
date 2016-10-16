@@ -44,6 +44,9 @@
         $('.calendar_day').on('click', function(){
             query = 'year=<%= @year.inspect.html_safe %>&month=<%= @month.inspect.html_safe %>';
             query+= '&day='+$(this).find('.day-num').text();
+            <% if params[:show_all]  %>
+            query+= '&show_all=<%= params[:show_all] %>';
+            <% end %>
             $.getScript('schedule.js?'+query)
         });
     })

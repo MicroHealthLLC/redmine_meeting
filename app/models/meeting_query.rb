@@ -43,7 +43,7 @@ class MeetingQuery < Query
     order_option = [group_by_sort_order, options[:order]].flatten.reject(&:blank?)
 
     Meeting.visible.
-        where(statement).
+        where(statement).where(project_id: options[:project_id]).
         order(order_option).
         joins(joins_for_order_statement(order_option.join(',')))
   end

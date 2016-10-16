@@ -41,7 +41,7 @@ class MeetingsController < ApplicationController
           @limit = per_page_option
       end
       sort_clause ||= 'date DESC, start_time ASC'
-      scope = @query.results_scope(:order => sort_clause)
+      scope = @query.results_scope(:order => sort_clause, project_id: @project.id )
       @entry_count = scope.count
       @entry_pages = Paginator.new @entry_count, per_page_option, params['page']
       @meetings = scope.offset(@entry_pages.offset).limit(@entry_pages.per_page).all
@@ -171,7 +171,11 @@ class MeetingsController < ApplicationController
     if @query.valid?
       @events = []
       @q2 = MeetingQuery.build_from_params(params, :name => '_')
-      @events = Meeting.visible.where(status:'New').where("(date BETWEEN ? AND ?) OR (end_date BETWEEN ? AND ?)", @calendar.startdt, @calendar.enddt,@calendar.startdt, @calendar.enddt)
+      scope = Meeting.visible
+      unless params[:show_all]
+        scope = scope.where(status:'New')
+      end
+      @events = scope.where("(date BETWEEN ? AND ?) OR (end_date BETWEEN ? AND ?)", @calendar.startdt, @calendar.enddt,@calendar.startdt, @calendar.enddt)
 
       @calendar.events = @events
     end
