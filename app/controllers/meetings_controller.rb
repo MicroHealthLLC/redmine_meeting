@@ -171,7 +171,7 @@ class MeetingsController < ApplicationController
     if @query.valid?
       @events = []
       @q2 = MeetingQuery.build_from_params(params, :name => '_')
-      scope = Meeting.visible
+      scope = Meeting.visible.where(project_id: @project.id)
       unless params[:show_all]
         scope = scope.where(status:'New')
       end
