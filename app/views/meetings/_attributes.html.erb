@@ -12,14 +12,14 @@
         <% if @meeting.safe_attribute? 'date' %>
             <p id="date_in_area">
               <%= f.text_field(:date, :size => 10, :required => true) %>
-              <%= calendar_for('meeting_date') %>
+              <%= calendar_for_meeeting('meeting_date') %>
             </p>
         <% end %>
 
         <% if @meeting.safe_attribute? 'end_date' %>
             <p id="date_in_area">
               <%= f.text_field(:end_date, :size => 10, :required => true) %>
-              <%= calendar_for('meeting_end_date') %>
+              <%= calendar_for_meeeting('meeting_end_date') %>
             </p>
         <% end %>
 
