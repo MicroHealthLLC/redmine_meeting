@@ -173,7 +173,7 @@ class MeetingsController < ApplicationController
       @q2 = MeetingQuery.build_from_params(params, :name => '_')
       scope = Meeting.visible.where(project_id: @project.id)
       unless params[:show_all]
-        scope = scope.where(status:'New')
+        scope = scope.where("status= ? OR archive = ?", 'New', false)
       end
       @events = scope.where("(date BETWEEN ? AND ?) OR (end_date BETWEEN ? AND ?)", @calendar.startdt, @calendar.enddt,@calendar.startdt, @calendar.enddt)
 

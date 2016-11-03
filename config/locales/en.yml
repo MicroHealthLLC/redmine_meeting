@@ -17,4 +17,5 @@ en:
    label_scheduled: "Scheduled"
    label_completed: "Completed"
    label_cancelled: "Cancelled"
+   field_archive: "Hide in Calendar"
    field_location_online: "Location"

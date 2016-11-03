@@ -42,7 +42,8 @@ class Meeting < ActiveRecord::Base
                   'end_date',
                   'agenda',
                   'custom_field_values',
-                  'meeting_minutes'
+                  'meeting_minutes',
+                  'archive'
 
   scope :visible, lambda {|*args|
     if User.current.admin?
@@ -51,6 +52,9 @@ class Meeting < ActiveRecord::Base
       includes(:project, :meeting_users).references(:project, :meeting_users).where("meeting_users.user_id= ? OR #{table_name}.user_id = ?", User.current.id, User.current.id)
     end
   }
+  def self.not_archived
+    where(archive: false)
+  end
 
   def due_date
     date

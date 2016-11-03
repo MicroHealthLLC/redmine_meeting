@@ -52,6 +52,15 @@
             <% status = [[l(:label_scheduled), 'new'], [l(:label_completed), 'Completed'], [l(:label_cancelled), 'Cancelled']] %>
             <p><%= f.select :status,options_for_select(status, @meeting.status), :required => true %> </p>
         <% end %>
+        <div class="splitcontent" style="display: none;" id="meeting_archive">
+          <% if @meeting.safe_attribute? 'archive' %>
+            <span class="">
+              <p id="">
+                <%= f.check_box(:archive) %>
+              </p>
+            </span>
+          <% end %>
+        </div>
         <%= content_tag 'span', :id => "meeting_meeting_minutes_and_toolbar", :style => ('display:none') do %>
 
             <% if @meeting.safe_attribute?('meeting_minutes')%>
@@ -79,11 +88,13 @@
     {
       $('#meeting_meeting_minutes').show();
       $('#meeting_meeting_minutes_and_toolbar').show();
+      $('#meeting_archive').show();
     }
 
     else{
       $('#meeting_meeting_minutes_and_toolbar').hide();
       $('#meeting_meeting_minutes').hide();
+      $('#meeting_archive').hide();
     }
   }
   $(document).ready(function(e){
